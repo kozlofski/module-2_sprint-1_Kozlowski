@@ -2,6 +2,7 @@ document.addEventListener("DOMContentLoaded", () => console.log("loaded"));
 
 const BASE_URL = "https://rickandmortyapi.com/api/character";
 
+//testing
 async function loadAllCharacters() {
   try {
     const response = await fetch(BASE_URL);
