@@ -6,10 +6,12 @@ const BASE_URL = "https://rickandmortyapi.com/api/character";
 async function loadAllCharacters() {
   try {
     const response = await fetch(BASE_URL);
-    const json = await response.json();
+    const allCharactersData = await response.json();
 
-    console.dir(json);
-  } catch (error) {}
+    return allCharactersData;
+  } catch (error) {
+    console.error("Error with loading characters", error);
+  }
 }
 
 async function getCharacter(id) {
@@ -17,12 +19,15 @@ async function getCharacter(id) {
     const response = await fetch(`${BASE_URL}/${id}`);
     const characterData = await response.json();
     return characterData;
-  } catch (error) {}
+  } catch (error) {
+    console.error(`Error with loading character no ${id}`, error);
+  }
 }
 
-// loadAllCharacters();
-const promise = getCharacter(1);
-promise.then((v) => renderCharacter(v));
+const allCharactersPromise = loadAllCharacters();
+allCharactersPromise.then((c) =>
+  c.results.forEach((character) => renderCharacter(character))
+);
 
 function createElement(tag, container, ...classes) {
   let parentElement;
