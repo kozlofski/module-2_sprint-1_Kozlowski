@@ -1,0 +1,12 @@
+.character-card {
+    border: 1px solid red;
+    width: 220px;
+    height: 320px;
+
+}
+
+.character-pic {
+    width: 200px;
+    height: 200px;
+    background-size: contain;
+}
