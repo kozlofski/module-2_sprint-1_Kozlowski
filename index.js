@@ -8,11 +8,15 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 const BASE_URL = "https://rickandmortyapi.com/api/character/";
+const errorMessage = `Nie znaleziono postaci spełniających kryteria wyszukiwania.`;
+
 let CURRENT_URL = "";
 let selectedStatus = "alive";
 let currentPage = 1;
 let paginationLimit = 20;
 let maxPages = 0;
+
+// === INIT FUNCTIONS === //
 
 function initRadioFilters() {
   const radioButtons = document.querySelectorAll(".filter-status");
@@ -20,7 +24,7 @@ function initRadioFilters() {
   radioButtons.forEach((button) =>
     button.addEventListener("click", () => {
       selectedStatus = button.value;
-      //   console.log(selectedStatus);
+      currentPage = 1;
       renderCharacters();
     })
   );
@@ -28,7 +32,10 @@ function initRadioFilters() {
 
 function initNameFilter() {
   const nameInput = document.getElementById("filter-name");
-  nameInput.addEventListener("input", () => renderCharacters());
+  nameInput.addEventListener("input", () => {
+    currentPage = 1;
+    renderCharacters();
+  });
 }
 
 function initPageBtns() {
@@ -37,24 +44,51 @@ function initPageBtns() {
     btn.addEventListener("click", () => {
       if (btn.value === ">") {
         ++currentPage;
-        if (currentPage > maxPages) currentPage = maxPages;
-        else renderCharacters();
+        if (currentPage > maxPages) {
+          currentPage = maxPages;
+        } else {
+          renderCharacters();
+        }
       } else {
         --currentPage;
-        if (currentPage < 1) currentPage = 1;
-        else renderCharacters();
+        if (currentPage < 1) {
+          currentPage = 1;
+        } else {
+          renderCharacters();
+        }
       }
       console.log(currentPage);
     })
   );
 }
 
+// === MAIN FUNCTIONALITY === //
+
 function renderCharacters() {
   document.getElementById("characters").innerHTML = "";
   const allCharactersPromise = fetchCharacters();
   allCharactersPromise
     .then((c) => c.results.forEach((character) => renderCharacter(character)))
-    .catch((e) => console.error("dupa", e));
+    .catch(() => renderErrorMessage());
+}
+
+function renderErrorMessage() {
+  document.getElementById("characters").innerHTML = errorMessage;
+}
+
+async function fetchCharacters() {
+  try {
+    const URL = buildUrl();
+    console.log(URL);
+    const response = await fetch(URL);
+    const allCharactersData = await response.json();
+
+    maxPages = allCharactersData.info.pages;
+    console.dir(allCharactersData);
+    return allCharactersData;
+  } catch (error) {
+    return errorMessage;
+  }
 }
 
 function buildUrl() {
@@ -70,38 +104,6 @@ function buildUrl() {
   console.log("query params", searchParams.toString());
   return `${BASE_URL}?${searchParams.toString()}`;
 }
-
-async function fetchCharacters() {
-  try {
-    const URL = buildUrl();
-    console.log(URL);
-    const response = await fetch(URL);
-    const allCharactersData = await response.json();
-
-    maxPages = allCharactersData.info.pages;
-    console.log("max pages: ", maxPages);
-
-    return allCharactersData;
-  } catch (error) {
-    console.error("Error with loading characters", error);
-  }
-}
-
-// to be deleted
-async function getCharacter(id) {
-  try {
-    const response = await fetch(`${BASE_URL}/${id}`);
-    const characterData = await response.json();
-    return characterData;
-  } catch (error) {
-    console.error(`Error with loading character no ${id}`, error);
-  }
-}
-
-// const allCharactersPromise = loadAllCharacters();
-// allCharactersPromise.then((c) =>
-//   c.results.forEach((character) => renderCharacter(character))
-// );
 
 function createElement(tag, container, ...classes) {
   let parentElement;
@@ -119,7 +121,6 @@ function createElement(tag, container, ...classes) {
 
 function renderCharacter(characterData) {
   const characterDiv = createElement("div", "characters", "character-card");
-  //   console.log("character div: ", characterDiv);
   const characterPic = createElement("div", characterDiv, "character-pic");
 
   characterPic.setAttribute(
