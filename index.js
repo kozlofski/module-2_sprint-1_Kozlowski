@@ -2,12 +2,17 @@ document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM loaded");
   initRadioFilters();
   initNameFilter();
+
   renderCharacters();
+  initPageBtns();
 });
 
 const BASE_URL = "https://rickandmortyapi.com/api/character/";
 let CURRENT_URL = "";
-let selectedStatus = "";
+let selectedStatus = "alive";
+let currentPage = 1;
+let paginationLimit = 20;
+let maxPages = 0;
 
 function initRadioFilters() {
   const radioButtons = document.querySelectorAll(".filter-status");
@@ -26,35 +31,55 @@ function initNameFilter() {
   nameInput.addEventListener("input", () => renderCharacters());
 }
 
-function renderCharacters() {
-  document.getElementById("characters").innerHTML = "";
-  const allCharactersPromise = loadAllCharacters();
-  allCharactersPromise.then((c) =>
-    c.results.forEach((character) => renderCharacter(character))
+function initPageBtns() {
+  const pageBtns = document.querySelectorAll(".page-btn");
+  pageBtns.forEach((btn) =>
+    btn.addEventListener("click", () => {
+      if (btn.value === ">") {
+        ++currentPage;
+        if (currentPage > maxPages) currentPage = maxPages;
+        else renderCharacters();
+      } else {
+        --currentPage;
+        if (currentPage < 1) currentPage = 1;
+        else renderCharacters();
+      }
+      console.log(currentPage);
+    })
   );
 }
 
-function buildUrl() {
-  let queryParams = "";
-  //until status is not selected this should be empty
-  const statusQuery = selectedStatus === "" ? "" : `status=${selectedStatus}`;
-  const inputName = document.getElementById("filter-name").value;
-  const nameQuery = inputName === "" ? "" : `name=${inputName}`;
-  if (statusQuery !== "" || nameQuery !== "") queryParams = `?`;
-  if (statusQuery !== "") queryParams = `${queryParams}${statusQuery}`;
-  if (statusQuery !== "" && nameQuery !== "") queryParams = `${queryParams}&`;
-  if (nameQuery !== "") queryParams = `${queryParams}${nameQuery}`;
-
-  console.log("filter-name:", name);
-  return `${BASE_URL}${queryParams}`;
+function renderCharacters() {
+  document.getElementById("characters").innerHTML = "";
+  const allCharactersPromise = fetchCharacters();
+  allCharactersPromise
+    .then((c) => c.results.forEach((character) => renderCharacter(character)))
+    .catch((e) => console.error("dupa", e));
 }
 
-async function loadAllCharacters() {
+function buildUrl() {
+  const searchParams = new URLSearchParams();
+
+  searchParams.append("page", currentPage);
+
+  const inputName = document.getElementById("filter-name").value;
+  if (inputName !== "") searchParams.append("name", inputName);
+
+  searchParams.append("status", selectedStatus);
+
+  console.log("query params", searchParams.toString());
+  return `${BASE_URL}?${searchParams.toString()}`;
+}
+
+async function fetchCharacters() {
   try {
     const URL = buildUrl();
     console.log(URL);
     const response = await fetch(URL);
     const allCharactersData = await response.json();
+
+    maxPages = allCharactersData.info.pages;
+    console.log("max pages: ", maxPages);
 
     return allCharactersData;
   } catch (error) {
