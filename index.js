@@ -1,11 +1,59 @@
-document.addEventListener("DOMContentLoaded", () => console.log("DOM oaded"));
+document.addEventListener("DOMContentLoaded", () => {
+  console.log("DOM loaded");
+  initRadioFilters();
+  initNameFilter();
+  renderCharacters();
+});
 
-const BASE_URL = "https://rickandmortyapi.com/api/character";
+const BASE_URL = "https://rickandmortyapi.com/api/character/";
+let CURRENT_URL = "";
+let selectedStatus = "";
 
-//testing
+function initRadioFilters() {
+  const radioButtons = document.querySelectorAll(".filter-status");
+  //   console.log(radioButtons);
+  radioButtons.forEach((button) =>
+    button.addEventListener("click", () => {
+      selectedStatus = button.value;
+      //   console.log(selectedStatus);
+      renderCharacters();
+    })
+  );
+}
+
+function initNameFilter() {
+  const nameInput = document.getElementById("filter-name");
+  nameInput.addEventListener("input", () => renderCharacters());
+}
+
+function renderCharacters() {
+  document.getElementById("characters").innerHTML = "";
+  const allCharactersPromise = loadAllCharacters();
+  allCharactersPromise.then((c) =>
+    c.results.forEach((character) => renderCharacter(character))
+  );
+}
+
+function buildUrl() {
+  let queryParams = "";
+  //until status is not selected this should be empty
+  const statusQuery = selectedStatus === "" ? "" : `status=${selectedStatus}`;
+  const inputName = document.getElementById("filter-name").value;
+  const nameQuery = inputName === "" ? "" : `name=${inputName}`;
+  if (statusQuery !== "" || nameQuery !== "") queryParams = `?`;
+  if (statusQuery !== "") queryParams = `${queryParams}${statusQuery}`;
+  if (statusQuery !== "" && nameQuery !== "") queryParams = `${queryParams}&`;
+  if (nameQuery !== "") queryParams = `${queryParams}${nameQuery}`;
+
+  console.log("filter-name:", name);
+  return `${BASE_URL}${queryParams}`;
+}
+
 async function loadAllCharacters() {
   try {
-    const response = await fetch(BASE_URL);
+    const URL = buildUrl();
+    console.log(URL);
+    const response = await fetch(URL);
     const allCharactersData = await response.json();
 
     return allCharactersData;
@@ -14,6 +62,7 @@ async function loadAllCharacters() {
   }
 }
 
+// to be deleted
 async function getCharacter(id) {
   try {
     const response = await fetch(`${BASE_URL}/${id}`);
@@ -24,10 +73,10 @@ async function getCharacter(id) {
   }
 }
 
-const allCharactersPromise = loadAllCharacters();
-allCharactersPromise.then((c) =>
-  c.results.forEach((character) => renderCharacter(character))
-);
+// const allCharactersPromise = loadAllCharacters();
+// allCharactersPromise.then((c) =>
+//   c.results.forEach((character) => renderCharacter(character))
+// );
 
 function createElement(tag, container, ...classes) {
   let parentElement;
@@ -45,7 +94,7 @@ function createElement(tag, container, ...classes) {
 
 function renderCharacter(characterData) {
   const characterDiv = createElement("div", "characters", "character-card");
-  console.log("character div: ", characterDiv);
+  //   console.log("character div: ", characterDiv);
   const characterPic = createElement("div", characterDiv, "character-pic");
 
   characterPic.setAttribute(
