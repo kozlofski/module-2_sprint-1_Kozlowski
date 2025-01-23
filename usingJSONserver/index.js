@@ -7,7 +7,9 @@ document.addEventListener("DOMContentLoaded", () => {
   initPageBtns();
 });
 
-const BASE_URL = "https://rickandmortyapi.com/api/character/";
+// const BASE_URL = "https://rickandmortyapi.com/api/character/";
+const JSON_SERVER_URL = "http://localhost:3000/results";
+
 const errorMessage = `Nie znaleziono postaci spełniających kryteria wyszukiwania.`;
 
 let CURRENT_URL = "";
@@ -102,7 +104,8 @@ function buildUrl() {
   searchParams.append("status", selectedStatus);
 
   console.log("query params", searchParams.toString());
-  return `${BASE_URL}?${searchParams.toString()}`;
+  // return `${JSON_SERVER_URL}?${searchParams.toString()}`;
+  return `${JSON_SERVER_URL}`;
 }
 
 function createElement(tag, container, ...classes) {
