@@ -1,0 +1,83 @@
+body {
+    background-color: #f0f0f0;
+
+}
+
+#filters {
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 0.5rem;
+    align-items: center;
+    padding: 1rem 0;
+}
+
+#filter-name {
+    height: 1.5rem;
+
+}
+
+#characters {
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: center;
+}
+
+.character-card {
+    /* border: 1px solid red; */
+    width: 220px;
+    height: 320px;
+    box-shadow: 10px 10px 20px #c0c0c0;
+    border-radius: 0.5rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #ffffff;
+    padding: 1rem;
+}
+
+.character-pic {
+    width: 100%;
+    padding-top: 90%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.character-h2 {
+    margin-top: 2rem;
+    font-size: 1.25rem;
+}
+
+.character-properties {
+    margin-top: 2rem;
+    align-self: flex-start;
+}
+
+.character-property {
+    margin-bottom: 0.25rem;
+}
+
+#page-btns {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem 0;
+}
+
+.page-btn {
+    width: 2rem;
+    height: 2rem;
+    background-color: #007afe;
+    color: #ffffff;
+    border: none;
+}
+
+.page-btn:disabled {
+    background-color: #84bfff;
+}

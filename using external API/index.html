@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Rick and Morty</title>
+    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="reset.css" />
+  </head>
+  <body>
+    <div id="main-container">
+      <div id="filters">
+        <span id="filters-label">Filtry:</span>
+        <input
+          type="text"
+          name="char-name"
+          id="filter-name"
+          placeholder="Wyszukaj po nazwie"
+        />
+        <div id="filter-radio-btns">
+          <input
+            type="radio"
+            name="filter-status"
+            id="radio-alive"
+            value="alive"
+            class="filter-status"
+            checked
+          />
+          <label for="radio-alive">Żywy</label>
+          <input
+            type="radio"
+            name="filter-status"
+            id="radio-dead"
+            value="dead"
+            class="filter-status"
+          />
+          <label for="radio-dead">Martwy</label>
+
+          <input
+            type="radio"
+            name="filter-status"
+            id="radio-unknown"
+            value="unknown"
+            class="filter-status"
+          />
+          <label for="radio-unknown">Nieznany</label>
+        </div>
+      </div>
+      <div id="characters"></div>
+      <div id="page-btns">
+        <input type="button" value="<" id="prev-page" class="page-btn" />
+        <input type="button" value=">" id="next-page" class="page-btn" />
+      </div>
+    </div>
+    <script src="index.js"></script>
+  </body>
+</html>
