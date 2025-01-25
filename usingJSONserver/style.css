@@ -30,7 +30,7 @@ body {
 .character-card {
     /* border: 1px solid red; */
     width: 220px;
-    height: 320px;
+    /* height: 320px; */
     box-shadow: 10px 10px 20px #c0c0c0;
     border-radius: 0.5rem;
     display: flex;
@@ -80,4 +80,38 @@ body {
 
 .page-btn:disabled {
     background-color: #84bfff;
+}
+
+.character-delete-btn {
+    margin-top: 1rem;
+    width: 100%;
+}
+
+#new-character-form {
+    margin: 0 auto;
+    background-color: #ffffff;
+    padding: 1rem;
+    width: 33%;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+#new-character-h2 {
+    font-size: 1.5rem;
+    font-weight: 900;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+#new-character-form input,
+#new-character-form select {
+    padding: 0.25rem;
+}
+
+#create-new-character {
+    padding: 0.25rem;
+    color: #ffffff;
+    background-color: #0a7eff;
+    border: none;
 }

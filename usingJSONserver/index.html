@@ -51,6 +51,28 @@
         <input type="button" value="<" id="prev-page" class="page-btn" />
         <input type="button" value=">" id="next-page" class="page-btn" />
       </div>
+
+      <div id="new-character-form">
+        <h2 id="new-character-h2">Stwórz postać</h2>
+        <input
+          type="text"
+          name="new-character-name"
+          id="new-character-name"
+          placeholder="Nazwa postaci"
+        />
+        <select name="" id="new-character-status">
+          <option value="Alive">Żywy</option>
+          <option value="Dead">Martwy</option>
+          <option value="Unknown">Nieznany</option>
+        </select>
+        <input
+          type="text"
+          name="new-character-race"
+          id="new-character-race"
+          placeholder="Rasa"
+        />
+        <button id="create-new-character">Stwórz</button>
+      </div>
     </div>
     <script src="index.js"></script>
   </body>

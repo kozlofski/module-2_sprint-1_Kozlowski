@@ -4,11 +4,15 @@ document.addEventListener("DOMContentLoaded", () => {
   initNameFilter();
 
   renderCharacters();
+
   initPageBtns();
+  initNewCharacterBtn();
 });
 
 // const BASE_URL = "https://rickandmortyapi.com/api/character/";
 const JSON_SERVER_URL = "http://localhost:3000/results";
+const defaultImageUrl =
+  "https://rickandmortyapi.com/api/character/avatar/3.jpeg";
 
 const errorMessage = `Nie znaleziono postaci spełniających kryteria wyszukiwania.`;
 
@@ -64,17 +68,23 @@ function initPageBtns() {
   );
 }
 
+function initNewCharacterBtn() {
+  const createBtn = document.getElementById("create-new-character");
+  createBtn.addEventListener("click", createCharacter);
+}
+
 // === MAIN FUNCTIONALITY === //
 
 function renderCharacters() {
   document.getElementById("characters").innerHTML = "";
   const allCharactersPromise = fetchCharacters();
   allCharactersPromise
-    .then((c) => c.results.forEach((character) => renderCharacter(character)))
-    .catch(() => renderErrorMessage());
+    .then((c) => c.forEach((character) => renderCharacter(character)))
+    .catch((e) => renderErrorMessage(e));
 }
 
-function renderErrorMessage() {
+function renderErrorMessage(e) {
+  console.error(e);
   document.getElementById("characters").innerHTML = errorMessage;
 }
 
@@ -83,9 +93,11 @@ async function fetchCharacters() {
     const URL = buildUrl();
     console.log(URL);
     const response = await fetch(URL);
+    // console.log(response);
     const allCharactersData = await response.json();
+    // console.log(allCharactersData);
 
-    maxPages = allCharactersData.info.pages;
+    maxPages = 2;
     console.dir(allCharactersData);
     return allCharactersData;
   } catch (error) {
@@ -96,16 +108,16 @@ async function fetchCharacters() {
 function buildUrl() {
   const searchParams = new URLSearchParams();
 
-  searchParams.append("page", currentPage);
+  searchParams.append("_page", currentPage);
 
   const inputName = document.getElementById("filter-name").value;
-  if (inputName !== "") searchParams.append("name", inputName);
+  // if (inputName !== "") searchParams.append("name", inputName);
 
-  searchParams.append("status", selectedStatus);
+  // searchParams.append("status", selectedStatus);
 
   console.log("query params", searchParams.toString());
-  // return `${JSON_SERVER_URL}?${searchParams.toString()}`;
-  return `${JSON_SERVER_URL}`;
+  return `${JSON_SERVER_URL}?${searchParams.toString()}`;
+  // return `${JSON_SERVER_URL}`;
 }
 
 function createElement(tag, container, ...classes) {
@@ -151,4 +163,46 @@ function renderCharacter(characterData) {
     "character-property"
   );
   characterSpecies.innerHTML = `Gatunek: ${characterData.species}`;
+
+  const deleteButton = createElement(
+    "button",
+    characterDiv,
+    "character-delete-btn"
+  );
+  deleteButton.id = characterData.id;
+
+  deleteButton.innerHTML = `Usuń postać`;
+  deleteButton.addEventListener("click", (e) => {
+    e.preventDefault();
+    const id = characterData.id;
+    deleteCharacter(id);
+  });
+}
+
+async function deleteCharacter(id) {
+  await fetch(`${JSON_SERVER_URL}/${id}`, {
+    method: "DELETE",
+  });
+  renderCharacters();
+}
+
+async function createCharacter() {
+  const characterName = document.getElementById("new-character-name").value;
+  const characterStatus = document.getElementById("new-character-status").value;
+  const characterRace = document.getElementById("new-character-race").value;
+
+  const newCharacter = {
+    name: characterName,
+    status: characterStatus,
+    species: characterRace,
+    image: defaultImageUrl,
+  };
+
+  const response = await fetch(JSON_SERVER_URL, {
+    method: "POST",
+    headers: {
+      "content-type": "application/json",
+    },
+    body: JSON.stringify(newCharacter),
+  });
 }
