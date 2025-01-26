@@ -13,7 +13,7 @@ const errorMessage = `Nie znaleziono postaci spełniających kryteria wyszukiwan
 let CURRENT_URL = "";
 let selectedStatus = "alive";
 let currentPage = 1;
-let paginationLimit = 20;
+let paginationLimit = 10;
 let maxPages = 0;
 
 // === INIT FUNCTIONS === //

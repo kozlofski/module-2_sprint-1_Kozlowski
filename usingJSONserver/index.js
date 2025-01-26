@@ -13,14 +13,11 @@ document.addEventListener("DOMContentLoaded", () => {
 const JSON_SERVER_URL = "http://localhost:3000/results";
 const defaultImageUrl =
   "https://rickandmortyapi.com/api/character/avatar/3.jpeg";
-
 const errorMessage = `Nie znaleziono postaci spełniających kryteria wyszukiwania.`;
 
 let CURRENT_URL = "";
 let selectedStatus = "alive";
 let currentPage = 1;
-
-let totalCharacters = 0;
 let paginationLimit = 10;
 let maxPages = 0;
 
@@ -51,12 +48,11 @@ function initPageBtns() {
     btn.addEventListener("click", () => {
       if (btn.value === ">") {
         ++currentPage;
-        // disabled upper limiting of page number because of lack of functionality of json-server
-        // that would show total numbers of characters (after filtering).
-        // It would complicate the code much and additional request
-        // without pagination query param would be needed
-        // to fetch this total number
-
+        // disabled upper limiting of page number because of
+        // lack of functionality of json-server,
+        // that would show total numbers of fetched characters (after filtering).
+        // It would complicate the code much and require an additional request
+        // without pagination query param
         renderCharacters();
       } else {
         --currentPage;
@@ -86,7 +82,6 @@ function renderCharacters() {
 }
 
 function renderErrorMessage(e) {
-  console.error(e);
   document.getElementById("characters").innerHTML = errorMessage;
 }
 
@@ -96,9 +91,6 @@ async function fetchCharacters() {
     console.log(`Fetching data from: ${URL}`);
     const response = await fetch(URL);
     const allCharactersData = await response.json();
-
-    totalCharacters = allCharactersData.length;
-    maxPages = Math.ceil(totalCharacters / paginationLimit);
 
     return allCharactersData;
   } catch (error) {
@@ -201,7 +193,7 @@ async function createCharacter() {
     image: defaultImageUrl,
   };
   try {
-    const response = await fetch(JSON_SERVER_URL, {
+    await fetch(JSON_SERVER_URL, {
       method: "POST",
       headers: {
         "content-type": "application/json",
