@@ -1,10 +1,4 @@
 {
-  "info": {
-    "count": 826,
-    "pages": 42,
-    "next": "https://rickandmortyapi.com/api/character/?page=2",
-    "prev": null
-  },
   "results": [
     {
       "id": 1,
@@ -641,6 +635,48 @@
       "episode": ["https://rickandmortyapi.com/api/episode/8"],
       "url": "https://rickandmortyapi.com/api/character/20",
       "created": "2017-11-04T22:34:53.659Z"
+    },
+    {
+      "name": "Józef Mielonka",
+      "status": "Unknown",
+      "species": "Demogorgon",
+      "image": "https://rickandmortyapi.com/api/character/avatar/3.jpeg",
+      "id": 21
+    },
+    {
+      "name": "sdfgdfs",
+      "status": "Alive",
+      "species": "dfsgffgsdf",
+      "image": "https://rickandmortyapi.com/api/character/avatar/3.jpeg",
+      "id": 22
+    },
+    {
+      "name": "dfsgfdg",
+      "status": "Alive",
+      "species": "dfgsdfg",
+      "image": "https://rickandmortyapi.com/api/character/avatar/3.jpeg",
+      "id": 23
+    },
+    {
+      "name": "dfsgfdgsfd",
+      "status": "Alive",
+      "species": "ddfsgdfsgdf",
+      "image": "https://rickandmortyapi.com/api/character/avatar/3.jpeg",
+      "id": 24
+    },
+    {
+      "name": "dssgdfgdf",
+      "status": "Alive",
+      "species": "dfsgdsfgfdgd",
+      "image": "https://rickandmortyapi.com/api/character/avatar/3.jpeg",
+      "id": 25
+    },
+    {
+      "name": "Nikczemny Ryszard",
+      "status": "Dead",
+      "species": "Alien",
+      "image": "https://rickandmortyapi.com/api/character/avatar/3.jpeg",
+      "id": 26
     }
   ]
 }

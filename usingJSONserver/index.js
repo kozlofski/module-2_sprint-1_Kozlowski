@@ -1,5 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
   console.log("DOM loaded");
+
   initRadioFilters();
   initNameFilter();
 
@@ -9,7 +10,6 @@ document.addEventListener("DOMContentLoaded", () => {
   initNewCharacterBtn();
 });
 
-// const BASE_URL = "https://rickandmortyapi.com/api/character/";
 const JSON_SERVER_URL = "http://localhost:3000/results";
 const defaultImageUrl =
   "https://rickandmortyapi.com/api/character/avatar/3.jpeg";
@@ -19,14 +19,15 @@ const errorMessage = `Nie znaleziono postaci spełniających kryteria wyszukiwan
 let CURRENT_URL = "";
 let selectedStatus = "alive";
 let currentPage = 1;
-let paginationLimit = 20;
+
+let totalCharacters = 0;
+let paginationLimit = 10;
 let maxPages = 0;
 
 // === INIT FUNCTIONS === //
 
 function initRadioFilters() {
   const radioButtons = document.querySelectorAll(".filter-status");
-  //   console.log(radioButtons);
   radioButtons.forEach((button) =>
     button.addEventListener("click", () => {
       selectedStatus = button.value;
@@ -50,11 +51,13 @@ function initPageBtns() {
     btn.addEventListener("click", () => {
       if (btn.value === ">") {
         ++currentPage;
-        if (currentPage > maxPages) {
-          currentPage = maxPages;
-        } else {
-          renderCharacters();
-        }
+        // disabled upper limiting of page number because of lack of functionality of json-server
+        // that would show total numbers of characters (after filtering).
+        // It would complicate the code much and additional request
+        // without pagination query param would be needed
+        // to fetch this total number
+
+        renderCharacters();
       } else {
         --currentPage;
         if (currentPage < 1) {
@@ -63,7 +66,6 @@ function initPageBtns() {
           renderCharacters();
         }
       }
-      console.log(currentPage);
     })
   );
 }
@@ -91,14 +93,13 @@ function renderErrorMessage(e) {
 async function fetchCharacters() {
   try {
     const URL = buildUrl();
-    console.log(URL);
+    console.log(`Fetching data from: ${URL}`);
     const response = await fetch(URL);
-    // console.log(response);
     const allCharactersData = await response.json();
-    // console.log(allCharactersData);
 
-    maxPages = 2;
-    console.dir(allCharactersData);
+    totalCharacters = allCharactersData.length;
+    maxPages = Math.ceil(totalCharacters / paginationLimit);
+
     return allCharactersData;
   } catch (error) {
     return errorMessage;
@@ -111,13 +112,11 @@ function buildUrl() {
   searchParams.append("_page", currentPage);
 
   const inputName = document.getElementById("filter-name").value;
-  // if (inputName !== "") searchParams.append("name", inputName);
+  if (inputName !== "") searchParams.append("name_like", inputName);
 
-  // searchParams.append("status", selectedStatus);
+  searchParams.append("status_like", selectedStatus);
 
-  console.log("query params", searchParams.toString());
   return `${JSON_SERVER_URL}?${searchParams.toString()}`;
-  // return `${JSON_SERVER_URL}`;
 }
 
 function createElement(tag, container, ...classes) {
@@ -180,10 +179,14 @@ function renderCharacter(characterData) {
 }
 
 async function deleteCharacter(id) {
-  await fetch(`${JSON_SERVER_URL}/${id}`, {
-    method: "DELETE",
-  });
-  renderCharacters();
+  try {
+    await fetch(`${JSON_SERVER_URL}/${id}`, {
+      method: "DELETE",
+    });
+    renderCharacters();
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 async function createCharacter() {
@@ -197,12 +200,15 @@ async function createCharacter() {
     species: characterRace,
     image: defaultImageUrl,
   };
-
-  const response = await fetch(JSON_SERVER_URL, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-    },
-    body: JSON.stringify(newCharacter),
-  });
+  try {
+    const response = await fetch(JSON_SERVER_URL, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+      },
+      body: JSON.stringify(newCharacter),
+    });
+  } catch (error) {
+    console.error(error);
+  }
 }
