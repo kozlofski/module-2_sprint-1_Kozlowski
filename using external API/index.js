@@ -57,7 +57,6 @@ function initPageBtns() {
           renderCharacters();
         }
       }
-      console.log(currentPage);
     })
   );
 }
@@ -79,12 +78,11 @@ function renderErrorMessage() {
 async function fetchCharacters() {
   try {
     const URL = buildUrl();
-    console.log(URL);
+    console.log(`Fetching data from: ${URL}`);
     const response = await fetch(URL);
     const allCharactersData = await response.json();
 
     maxPages = allCharactersData.info.pages;
-    console.dir(allCharactersData);
     return allCharactersData;
   } catch (error) {
     return errorMessage;
@@ -101,7 +99,6 @@ function buildUrl() {
 
   searchParams.append("status", selectedStatus);
 
-  console.log("query params", searchParams.toString());
   return `${BASE_URL}?${searchParams.toString()}`;
 }
 
